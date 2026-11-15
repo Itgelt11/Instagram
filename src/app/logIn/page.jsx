@@ -5,19 +5,35 @@ import { Input } from "@/components/ui/input";
 import { supabaseClient } from "@/supabase";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "@/components/ui/toast"
 
-const Page  = () => {
+const Page = () => {
     const supabase = supabaseClient();
     const [user, setUser] = useState({email: "", password: "", username: ""});
     const router = useRouter();
 
     const Login = async () => {
-        const response = await supabase.auth.signInWithPassword({
+        const {data, error} = await supabase.auth.signInWithPassword({
             email: user.email,
             password: user.password
         })
-        router.push("/");
+        if(error){
+            toast.add({
+                title: "Try again",
+                description: response.error.message,
+                type: "error"
+            })
+        }else{
+               toast.add({
+                title: "welcome back",
+                description: "succesful",
+                type: "succes"
+            })
+            router.push("/");
+        }
+        // console.log(data, error, "this");
     }
+
     const handleUser = (event) => {
         if(event.target.name === "email"){
             setUser({...user, email: event.target.value})
@@ -27,72 +43,79 @@ const Page  = () => {
     }
 
     return(
-        <div className="min-h-screen flex flex-col items-center justify-center bg-[#fafafa] px-4 py-10">
+        <div className="min-h-screen flex items-center justify-center bg-zinc-950 px-4">
+            <div className="w-full max-w-md">
 
-            {/* Login card */}
-            <div className="w-full max-w-[350px] border border-zinc-200 bg-white px-10 py-10">
+                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-2xl shadow-black/30">
 
-                <div className="mb-10 text-center">
-                    <h1 className="mb-3 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-4xl font-bold tracking-tight text-transparent">
-                        Instagram
-                    </h1>
+                    <div className="mb-8 text-center">
+                        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-xl font-bold text-violet-400 ring-1 ring-violet-500/20">
+                            +
+                        </div>
 
-                    <p className="text-sm font-semibold leading-5 text-zinc-500">
-                        Log in to see photos and videos from your friends.
-                    </p>
+                        <h1 className="text-3xl font-bold tracking-tight text-white">
+                            Welcome back
+                        </h1>
+
+                        <p className="mt-2 text-sm text-zinc-400">
+                            Log in to your account
+                        </p>
+                    </div>
+
+                    <div className="space-y-5">
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-zinc-300">
+                                Email
+                            </label>
+                            <Input
+                                onChange={(event) => handleUser(event)}
+                                value={user.email}
+                                placeholder="Enter your email"
+                                name="email"
+                                className="h-11 border-zinc-700 bg-zinc-950/70 text-white placeholder:text-zinc-500 focus-visible:ring-violet-500"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-zinc-300">
+                                Password
+                            </label>
+                            <Input
+                                onChange={(event) => handleUser(event)}
+                                value={user.password}
+                                placeholder="Enter your password"
+                                name="password"
+                                type="password"
+                                className="h-11 border-zinc-700 bg-zinc-950/70 text-white placeholder:text-zinc-500 focus-visible:ring-violet-500"
+                            />
+                        </div>
+
+                        <Button
+                            onClick={Login}
+                            className="h-11 w-full bg-violet-600 font-semibold text-white shadow-lg shadow-violet-950/30 transition-all hover:bg-violet-500"
+                        >
+                            Log in
+                        </Button>
+
+                    </div>
+
+                    <div className="mt-7 border-t border-zinc-800 pt-6 text-center">
+                        <p className="text-sm text-zinc-400">
+                            Don't have an account?{" "}
+                            <a href="/signup" className="font-semibold text-violet-400 transition-colors hover:text-violet-300">
+                                Sign up
+                            </a>
+                        </p>
+                    </div>
+
                 </div>
 
-                <div className="space-y-3">
-
-                    <Input
-                        onChange={(event) => handleUser(event)}
-                        value={user.email}
-                        placeholder="Email"
-                        name="email"
-                        className="h-10 rounded-sm border border-zinc-300 bg-[#fafafa] text-xs shadow-none placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-zinc-400"
-                    />
-
-                    <Input
-                        onChange={(event) => handleUser(event)}
-                        value={user.password}
-                        placeholder="Password"
-                        name="password"
-                        type="password"
-                        className="h-10 rounded-sm border border-zinc-300 bg-[#fafafa] text-xs shadow-none placeholder:text-zinc-500 focus-visible:ring-1 focus-visible:ring-zinc-400"
-                    />
-
-                    <Button
-                        onClick={Login}
-                        className="mt-3 h-9 w-full rounded-lg bg-[#0095f6] text-sm font-semibold text-white shadow-none hover:bg-[#1877f2]"
-                    >
-                        Log in
-                    </Button>
-
-                </div>
-
-                
-            </div>
-
-            {/* Sign-up card */}
-            <div className="mt-3 flex w-full max-w-[350px] items-center justify-center gap-1 border border-zinc-200 bg-white py-5 text-sm">
-
-                <span className="text-zinc-700">
-                    Don't have an account?
-                </span>
-
-                <button
-                    onClick={() => router.push("/sign-up")}
-                    className="font-semibold text-[#0095f6] hover:text-[#1877f2]"
-                >
-                    Sign up
-                </button>
+                <p className="mt-6 text-center text-xs text-zinc-600">
+                    © 2026. All rights reserved.
+                </p>
 
             </div>
-
-            <p className="mt-6 text-xs text-zinc-400">
-                © 2026 Instagram-inspired design
-            </p>
-
         </div>
     )
 }
