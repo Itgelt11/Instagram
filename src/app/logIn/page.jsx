@@ -1,4 +1,3 @@
-
 "use client"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +39,9 @@ const Page = () => {
         }else if(event.target.name === "password"){
             setUser({...user, password: event.target.value})
         }
+    }
+    const push = () => {
+        router.push("/sign-up");
     }
 
     return(
@@ -103,9 +105,7 @@ const Page = () => {
                     <div className="mt-7 border-t border-zinc-800 pt-6 text-center">
                         <p className="text-sm text-zinc-400">
                             Don't have an account?{" "}
-                            <a href="/signup" className="font-semibold text-violet-400 transition-colors hover:text-violet-300">
-                                Sign up
-                            </a>
+                            <Button onClick={push}>Sign-up</Button>
                         </p>
                     </div>
 

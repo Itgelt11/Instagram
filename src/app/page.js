@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDistanceToNowStrict } from "date-fns";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { MessageCircle } from "lucide-react";
 
 const Page = () => {
   const supabase = supabaseClient();
@@ -21,6 +22,10 @@ const Page = () => {
   useEffect(() => {
     getPosts();
   }, []);
+
+  const pushComments = (postId) => {
+    router.push(`/comment/${postId}`);
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 px-4 py-10">
@@ -80,6 +85,7 @@ const Page = () => {
                   <p className="whitespace-pre-wrap text-sm leading-7 text-zinc-300">
                     {post.caption}
                   </p>
+                  <MessageCircle onClick={() => pushComments(post.id)} />
                 </div>
               </div>
             );
@@ -95,11 +101,7 @@ const Page = () => {
           </div>
         )}
       </div>
-      <Button
-        onClick={() => router.push("/create-post")}
-      >
-        Create post
-      </Button>
+      <Button onClick={() => router.push("/create-post")}>Create post</Button>
     </div>
   );
 };
